@@ -4,13 +4,6 @@
  *
  * These classes provie a PHP Wrapper to the Stat (getstat.com) 
  *
- * PHP version 5
- *
- * LICENSE: This source file is subject to version 3.01 of the PHP license
- * that is available through the world-wide-web at the following URI:
- * http://www.php.net/license/3_01.txt.  If you did not receive a copy of
- * the PHP License and are unable to obtain it through the web, please
- * send a note to license@php.net so we can mail you a copy immediately.
  *
  * @category   Software
  * @package    fourps.stat
@@ -19,11 +12,28 @@
  * @license    http://www.php.net/license/3_01.txt  PHP License 3.01
  */
 
+ 
+/**
+ *
+ * 	Class : 		StatWrapper
+ *
+ *	Description : 	
+ *
+ *	Provides a simple wrapper which makes web requests to the Stat API returning data as JSON
+ *	Also has helper functions to return all projects, sites or a project by name
+*/
 class StatWrapper
 {
+	// Declare two member variables for the API KEY and the SUBDOMAIN
 	public $_STAT_API_KEY;
 	public $_STAT_SUBDOMAIN;
 	
+	/**
+	 *	Function : 		GetStatAPIUrl
+	 *
+	 *	Description : 	Gets the API URL using the API_KEY and SUBDOMAIN
+	 *
+	 */
 	public function GetStatAPIUrl()
 	{
 		$strURL = "";
@@ -36,6 +46,22 @@ class StatWrapper
 		return($strURL);
 	}
 	
+	/**
+	 *	Function : 		GetDataAsJSON
+	 *
+	 *	Parameters :
+	 *
+	 *	API_FUNCTION	String	API Function Call to make for example projects/list
+	 *
+	 *	Returns :
+	 *
+	 *  JSON Object returned from the API
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets the API URL using the API_KEY and SUBDOMAIN
+	 *
+	 */
 	public function GetDataAsJSON($API_FUNCTION)
 	{
 		$objReturn = null;
@@ -61,6 +87,18 @@ class StatWrapper
 		return($objReturn);
 	}
 	
+	/**
+	 *	Function : 		GetProjects
+	 *
+	 *	Returns :
+	 *
+	 *  Array of StatProject objects
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets a full list of projects within the Stat Account
+	 *
+	 */
 	public function GetProjects()
 	{
 		$arrProjects = array();
@@ -89,6 +127,18 @@ class StatWrapper
 		return($arrProjects);
 	}
 	
+	/**
+	 *	Function : 		GetSites
+	 *
+	 *	Returns :
+	 *
+	 *  Array of StatSite objects
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets a full list of sites within the Stat Account
+	 *
+	 */
 	public function GetSites()
 	{
 		$arrSites = array();
@@ -118,6 +168,22 @@ class StatWrapper
 		return($arrSites);
 	}
 	
+	/**
+	 *	Function : 		GetProjectByName
+	 *
+	 *	Parameters :
+	 *
+	 *	strName		String		Project Name
+	 *
+	 *	Returns :
+	 *
+	 *  Array of StatProject object
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets a stat project whose name matches the parameter supplied
+	 *
+	 */
 	function GetProjectByName($strName)
 	{
 		$pReturn = null;
@@ -141,6 +207,14 @@ class StatWrapper
 	
 }
 
+/**
+ *
+ * 	Class : 		StatProject
+ *
+ *	Description : 	
+ *
+ *	Provides a PHP Object versions of a Stat Project
+*/
 class StatProject
 {
 	public $ProjectId;
@@ -158,6 +232,22 @@ class StatProject
 		$this->Sites = array();
 	}
 	
+	/**
+	 *	Function : 		GetSiteByName
+	 *
+	 *	Parameters :
+	 *
+	 *	strTitle		String		Site Title
+	 *
+	 *	Returns :
+	 *
+	 *  StatSite object
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets all of the sites within the project and returns one whose name matches the parameter supplied.
+	 *
+	 */
 	public function GetSiteByName($strTitle)
 	{
 		$sSite = null;
@@ -179,6 +269,18 @@ class StatProject
 		return($sSite);	
 	}
 	
+	/**
+	 *	Function : 		GetSites
+	 *
+	 *	Returns :
+	 *
+	 *  None
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets all sites belonging to project and adds them to Sites array
+	 *
+	 */
 	public function GetSites()
 	{
 		$sw = new StatWrapper();
@@ -210,6 +312,14 @@ class StatProject
 	}
 }
 
+/**
+ *
+ * 	Class : 		StatSite
+ *
+ *	Description : 	
+ *
+ *	Provides a PHP Object versions of a Stat Site
+*/
 class StatSite
 {
 	public $SiteId;
@@ -230,6 +340,7 @@ class StatSite
 		$this->Keywords = array();
 	}
 	
+	// Private function to make a keyword object from JSON
 	private function CreateKeywordFromJSON($itm)
 	{
 		$sk = new StatKeyword();
@@ -304,6 +415,22 @@ class StatSite
 		return($sk);
 	}
 	
+	/**
+	 *	Function : 		GetKeywords
+	 *
+	 * Parameters :
+	 *
+	 * AllPages		Boolean		Get All Keywords or only the first 500 (page of results)
+	 *
+	 *	Returns :
+	 *
+	 *  None
+	 *
+	 *	Description : 	
+	 *
+	 *	Gets all of the keywords belonging to a site or just the first page and add to Keywords Array
+	 *
+	 */
 	public function GetKeywords($AllPages)
 	{
 		$this->Keywords = array();
@@ -369,6 +496,14 @@ class StatSite
 	
 }
 
+/**
+ *
+ * 	Class : 		StatKeyword
+ *
+ *	Description : 	
+ *
+ *	Provides a PHP Object versions of a Stat Keyword
+*/
 class StatKeyword
 {
 	public $KeywordId;
@@ -395,6 +530,14 @@ class StatKeyword
 	}
 }
 
+/**
+ *
+ * 	Class : 		StatRanking
+ *
+ *	Description : 	
+ *
+ *	Provides a PHP Object versions of a Stat Keyword
+*/
 class StatRanking
 {
 	public $RankType;
